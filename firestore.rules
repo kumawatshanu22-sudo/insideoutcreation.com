@@ -1,0 +1,207 @@
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: users
+// Fields:
+//   - uid: string (required)
+//   - email: string (required)
+//   - displayName: string
+//   - photoURL: string
+//   - role: string (admin/client)
+//   - createdAt: timestamp
+//
+// Collection: enquiries
+// Fields:
+//   - name: string (required)
+//   - email: string (required)
+//   - phone: string (required)
+//   - projectType: string (required)
+//   - details: string
+//   - uid: string
+//   - createdAt: timestamp
+//
+// Collection: design_briefs
+// Fields:
+//   - uid: string (required)
+//   - formData: map (required)
+//   - aiBrief: map (required)
+//   - createdAt: timestamp
+//
+// Collection: chats
+// Fields:
+//   - uid: string (required)
+//   - role: string (user/model)
+//   - text: string (required)
+//   - createdAt: timestamp
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        ((exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+         (request.auth.token.email == "kumawatshanu22@gmail.com" && (request.auth.token.email_verified == true || request.auth.token.firebase.sign_in_provider == 'google.com')));
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email']) &&
+             data.uid is string &&
+             data.email is string;
+    }
+
+    function isValidEnquiry(data) {
+      return data.keys().hasAll(['name', 'email', 'phone', 'projectType', 'projectScale', 'location']) &&
+             data.name is string && data.name.size() < 100 &&
+             data.email is string &&
+             data.phone is string &&
+             data.projectType is string &&
+             data.projectScale is string &&
+             data.location is string;
+    }
+
+    function isValidBrief(data) {
+      return data.keys().hasAll(['uid', 'formData', 'aiBrief']) &&
+             data.uid == request.auth.uid;
+    }
+
+    function isValidChat(data) {
+      return data.keys().hasAll(['uid', 'role', 'text']) &&
+             data.uid == request.auth.uid &&
+             data.role in ['user', 'model'] &&
+             data.text is string && data.text.size() < 2000;
+    }
+
+    function isValidVisualization(data) {
+      return data.keys().hasAll(['uid', 'name', 'email', 'phone']) &&
+             data.uid == request.auth.uid &&
+             data.name is string && data.name.size() < 100 &&
+             data.email is string &&
+             data.phone is string;
+    }
+
+    function isValidReel(data) {
+      return data.keys().hasAll(['videoUrl', 'title']) &&
+             data.videoUrl is string &&
+             data.title is string && data.title.size() < 200;
+    }
+
+    function isValidTestimonial(data) {
+      return data.keys().hasAll(['name', 'role', 'text']) &&
+             data.name is string && data.name.size() < 100 &&
+             data.role is string && data.role.size() < 100 &&
+             data.text is string && data.text.size() < 1000;
+    }
+
+    function isValidJob(data) {
+      return data.keys().hasAll(['title', 'description']) && 
+             data.title is string && data.title.size() < 200 &&
+             data.description is string;
+    }
+
+    function isValidJobApplication(data) {
+      return data.keys().hasAll(['name', 'email', 'phone', 'resumeUrl']) &&
+             data.name is string && data.name.size() < 100 &&
+             data.email is string &&
+             data.phone is string &&
+             data.resumeUrl is string;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isAdmin();
+    }
+
+    match /enquiries/{enquiryId} {
+      allow read: if isAdmin();
+      allow create: if isValidEnquiry(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /design_briefs/{briefId} {
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidBrief(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /chats/{chatId} {
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidChat(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /visualizations/{vizId} {
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidVisualization(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /reels/{reelId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidReel(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidTestimonial(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false; // Audit logs should be immutable
+    }
+
+    match /configs/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /portfolio_projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /referrals/{referralId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /vendors/{vendorId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidJob(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /job_applications/{applicationId} {
+      allow create: if isValidJobApplication(request.resource.data);
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

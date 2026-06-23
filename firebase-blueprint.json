@@ -1,0 +1,253 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "client"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Enquiry": {
+      "title": "Enquiry",
+      "description": "Project enquiry from the contact form",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "projectType": { "type": "string" },
+        "projectScale": { "type": "string" },
+        "estimatedArea": { "type": "string" },
+        "budgetRange": { "type": "string" },
+        "timeline": { "type": "string" },
+        "location": { "type": "string" },
+        "details": { "type": "string" },
+        "uid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "phone", "projectType", "projectScale", "location"]
+    },
+    "DesignBrief": {
+      "title": "Design Brief",
+      "description": "Personalized design brief generated from the form",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "formData": { "type": "object" },
+        "aiBrief": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "formData", "aiBrief"]
+    },
+    "ChatMessage": {
+      "title": "Chat Message",
+      "description": "Messages from the AI chatbot interaction",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "model"] },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "role", "text"]
+    },
+    "VisualizationRequest": {
+      "title": "Visualization Request",
+      "description": "Request for 3D room visualization",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "theme": { "type": "string" },
+        "finish": { "type": "string" },
+        "budget": { "type": "string" },
+        "details": { "type": "string" },
+        "layout": { "type": "string" },
+        "generatedImage": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name", "email", "phone"]
+    },
+    "Reel": {
+      "title": "Reel",
+      "description": "Instagram reel data",
+      "type": "object",
+      "properties": {
+        "videoUrl": { "type": "string" },
+        "title": { "type": "string" },
+        "pinned": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["videoUrl", "title"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Client testimonial data",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "text": { "type": "string" },
+        "image": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "role", "text"]
+    },
+    "AuditLog": {
+      "title": "Audit Log",
+      "description": "Administrative action logs",
+      "type": "object",
+      "properties": {
+        "adminId": { "type": "string" },
+        "adminEmail": { "type": "string" },
+        "action": { "type": "string" },
+        "targetCollection": { "type": "string" },
+        "targetId": { "type": "string" },
+        "details": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["adminId", "adminEmail", "action", "createdAt"]
+    },
+    "OTPVerification": {
+      "title": "OTP Verification",
+      "description": "Temporary OTP storage for verification",
+      "type": "object",
+      "properties": {
+        "contact": { "type": "string" },
+        "otp": { "type": "string" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "verified": { "type": "boolean" }
+      },
+      "required": ["contact", "otp", "expiresAt"]
+    },
+    "LandingPageConfig": {
+      "title": "Landing Page Config",
+      "description": "Dynamic images and content for the landing page",
+      "type": "object",
+      "properties": {
+        "hero_bg": { "type": "string" },
+        "philosophy_img": { "type": "string" },
+        "service1_img": { "type": "string" },
+        "service2_img": { "type": "string" },
+        "service3_img": { "type": "string" },
+        "portfolio_video": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "PortfolioProject": {
+      "title": "Portfolio Project",
+      "description": "Featured projects in the portfolio grid",
+      "type": "object",
+      "properties": {
+        "image": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "location": { "type": "string" },
+        "area": { "type": "string" },
+        "description": { "type": "string" },
+        "gallery": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["image", "title", "category"]
+    },
+    "Job": {
+      "title": "Job",
+      "description": "Active job vacancy listings",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "department": { "type": "string" },
+        "experience": { "type": "string" },
+        "location": { "type": "string" },
+        "type": { "type": "string" },
+        "description": { "type": "string" },
+        "requirements": { "type": "array", "items": { "type": "string" } },
+        "salary": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["title", "description"]
+    },
+    "JobApplication": {
+      "title": "JobApplication",
+      "description": "User applications and uploaded resumes",
+      "type": "object",
+      "properties": {
+        "jobId": { "type": "string" },
+        "jobTitle": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "experience": { "type": "string" },
+        "portfolioUrl": { "type": "string" },
+        "resumeUrl": { "type": "string" },
+         "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "phone", "resumeUrl"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/enquiries/{enquiryId}": {
+      "schema": "Enquiry",
+      "description": "Project enquiries"
+    },
+    "/design_briefs/{briefId}": {
+      "schema": "DesignBrief",
+      "description": "Generated design briefs"
+    },
+    "/chats/{chatId}": {
+      "schema": "ChatMessage",
+      "description": "Chat history"
+    },
+    "/visualizations/{vizId}": {
+      "schema": "VisualizationRequest",
+      "description": "3D visualization requests"
+    },
+    "/reels/{reelId}": {
+      "schema": "Reel",
+      "description": "Instagram reels feed"
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": "Testimonial",
+      "description": "Client testimonials"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Administrative audit logs"
+    },
+    "/otp_verifications/{verificationId}": {
+      "schema": "OTPVerification",
+      "description": "OTP verification records"
+    },
+    "/configs/{configId}": {
+      "schema": "LandingPageConfig",
+      "description": "App configuration settings"
+    },
+    "/portfolio_projects/{projectId}": {
+      "schema": "PortfolioProject",
+      "description": "Portfolio projects gallery"
+    },
+    "/jobs/{jobId}": {
+      "schema": "Job",
+      "description": "Active job listings"
+    },
+    "/job_applications/{applicationId}": {
+      "schema": "JobApplication",
+      "description": "User applications and resumes"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "RR Inside Out Creation Portal",
+  "description": "A professional portal for RR Inside Out Creation Private Limited, featuring luxury interior design, architectural services, and AI-powered 3D room visualization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
